@@ -1,0 +1,102 @@
+# Copies the Android app (APK) from an Expo build into a GitHub release, so colleagues always have one
+# permanent download link:
+#   https://github.com/loukis13/tds-expert-data/releases/latest/download/TDS-Expert.apk
+# Expo deletes build files after a few days; the GitHub release keeps it.
+#
+# To publish a new Android version: put the new build's .apk link from expo.dev (build page > ... > Download build)
+# in release/android.json with its version and build number, and commit. This runs by itself.
+name: Android download
+
+on:
+  push:
+    branches: [main]
+    paths: [release/android.json]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-download
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read release/android.json
+        id: info
+        run: |
+          set -euo pipefail
+          url=$(jq -r .url release/android.json)
+          version=$(jq -r .version release/android.json)
+          build=$(jq -r .build release/android.json)
+          [[ "$url" =~ ^https://expo\.dev/artifacts/eas/[A-Za-z0-9_-]+\.apk$ ]] || { echo "::error::url must be an expo.dev .apk link"; exit 1; }
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::version must look like 1.0.0"; exit 1; }
+          [[ "$build" =~ ^[0-9]+$ ]] || { echo "::error::build must be a number"; exit 1; }
+          {
+            echo "url=$url"
+            echo "version=$version"
+            echo "build=$build"
+            echo "tag=android-v$version-$build"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Download the APK from Expo
+        env:
+          URL: ${{ steps.info.outputs.url }}
+        run: curl -fsSL --retry 3 -o TDS-Expert.apk "$URL"
+
+      - name: Check the APK
+        env:
+          VERSION: ${{ steps.info.outputs.version }}
+          BUILD: ${{ steps.info.outputs.build }}
+        run: |
+          set -euo pipefail
+          unzip -l TDS-Expert.apk | grep -q AndroidManifest.xml || { echo "::error::not an Android app"; exit 1; }
+          bt=""
+          if [ -d "${ANDROID_HOME:-/nonexistent}/build-tools" ]; then
+            bt=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          fi
+          if [ -n "$bt" ] && [ -x "$bt/aapt2" ]; then
+            "$bt/aapt2" dump badging TDS-Expert.apk | head -1 | tee badging.txt
+            grep -q "name='gr.loukakos.tdsexpert'" badging.txt || { echo "::error::wrong app"; exit 1; }
+            grep -q "versionCode='$BUILD'" badging.txt || { echo "::error::build number differs from android.json"; exit 1; }
+            grep -q "versionName='$VERSION'" badging.txt || { echo "::error::version differs from android.json"; exit 1; }
+            "$bt/apksigner" verify --print-certs TDS-Expert.apk | grep -m1 'SHA-256' | sed 's/.*: //' > cert.txt
+          else
+            echo "::warning::Android build tools not found, checked only that this is an Android app"
+            echo "not checked" > cert.txt
+          fi
+          sha256sum TDS-Expert.apk | cut -d' ' -f1 > sha.txt
+          echo "APK $(du -h TDS-Expert.apk | cut -f1), SHA-256 $(cat sha.txt), signing certificate SHA-256 $(cat cert.txt)"
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.info.outputs.tag }}
+          VERSION: ${{ steps.info.outputs.version }}
+          BUILD: ${{ steps.info.outputs.build }}
+        run: |
+          set -euo pipefail
+          cat > notes.md <<NOTES
+          TDS Expert $VERSION (build $BUILD) for Android phones.
+
+          **Install:** open this link on the phone and allow Chrome to install apps when it asks:
+          https://github.com/$GITHUB_REPOSITORY/releases/latest/download/TDS-Expert.apk
+
+          **Εγκατάσταση:** ανοίξτε τον σύνδεσμο στο κινητό και επιτρέψτε στο Chrome να εγκαθιστά εφαρμογές όταν ρωτήσει.
+
+          Instructions for iPhone and Android: https://loukis13.github.io/tds-expert-data/
+
+          File SHA-256: \`$(cat sha.txt)\`
+          Signing certificate SHA-256: \`$(cat cert.txt)\`
+          NOTES
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" TDS-Expert.apk --clobber
+            gh release edit "$TAG" --notes-file notes.md --latest
+          else
+            gh release create "$TAG" TDS-Expert.apk --title "TDS Expert $VERSION for Android" --notes-file notes.md --latest
+          fi
+          echo "Published: https://github.com/$GITHUB_REPOSITORY/releases/latest/download/TDS-Expert.apk"
