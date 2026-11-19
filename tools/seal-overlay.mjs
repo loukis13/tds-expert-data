@@ -1195,8 +1195,8 @@ var ScalarMultiplier = class {
   }
   /**
    * Implements ec multiplication using precomputed signed fixed-window wNAF tables.
-   * Constant-time: fixed window count with one table addition per window — zero digits feed
-   * the fake accumulator — and no doublings; the lookup scans the whole window slice.
+   * Constant-time: fixed window count with one table addition per window - zero digits feed
+   * the fake accumulator - and no doublings; the lookup scans the whole window slice.
    * Scalar bounds are validated by the public entry points ({@link ScalarMultiplier.mulCT},
    * {@link ScalarMultiplier.mulCTBlinded}, {@link ScalarMultiplier.mulUnsafe});
    * signedWindowDigits throws if `n` exceeds the table.
@@ -1283,7 +1283,7 @@ var ScalarMultiplier = class {
    * A cached wNAF table only pays off when reused; a flat 2^FW_WINDOW table (`size-1` adds) is
    * far cheaper to build for a single use. The point-operation sequence is independent of `n`:
    * build the table, then per window exactly FW_WINDOW doublings, a data-oblivious scan over
-   * every table entry, and one addition (adds the identity when the window digit is 0 — never
+   * every table entry, and one addition (adds the identity when the window digit is 0 - never
    * skipped).
    *
    * `n` must be `< 2^bits`. Assumes complete addition (adding the identity costs the same as any
@@ -1291,7 +1291,7 @@ var ScalarMultiplier = class {
    * projective form (no normalizeZ): normalizing this small a table costs more than the
    * mixed-add savings it would buy for a single multiply.
    * @returns real point `p`; `f` duplicates it only to match {@link wnafCachedCT}'s return shape
-   * (this path needs no fake accumulator — its op-count is already scalar-independent).
+   * (this path needs no fake accumulator - its op-count is already scalar-independent).
    */
   fixedWindowCT(point, n, bits) {
     const W = FW_WINDOW;

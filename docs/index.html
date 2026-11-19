@@ -103,6 +103,10 @@ mark{color:var(--ink);font-weight:650;background:linear-gradient(transparent 14%
 :focus-visible{outline:3px solid #ffd60a;outline-offset:2px;border-radius:8px}
 .btn:focus-visible{border-radius:12px}
 
+.soon{margin:18px 0 22px;padding:18px 18px 16px;border:1.5px dashed var(--line);border-radius:14px}
+.soon h3{margin:0 0 6px;font-size:18px;line-height:1.3;font-weight:700}
+.soon p{margin:0;color:var(--muted);font-size:15.5px;max-width:60ch}
+
 /* Scan panel for computers */
 .scan{padding:22px;text-align:center}
 .qr-tile{display:inline-block;background:#fff;border-radius:14px;padding:12px;border:1px solid var(--line)}
@@ -142,8 +146,13 @@ footer a{margin-right:16px;text-underline-offset:3px}
 
     <div id="panel-iphone" role="tabpanel" aria-labelledby="tab-iphone" class="panel">
       <h2 class="panel-title">iPhone</h2>
-      <!-- While the iPhone version is on TestFlight -->
-      <ol class="steps" id="ios-testflight">
+      <!-- Until the App Store version is released (APP_STORE below is empty) -->
+      <div class="soon" id="ios-soon">
+        <h3 data-t="s1h">Coming to the App Store</h3>
+        <p data-t="s1p">Apple is checking the iPhone version. This usually takes a few days. Come back to this page then: a button to get TDS Expert from the App Store will be here.</p>
+      </div>
+      <!-- TestFlight steps, only if TESTFLIGHT below is true -->
+      <ol class="steps" id="ios-testflight" hidden>
         <li class="step">
           <span class="balloon" aria-hidden="true">1</span>
           <div>
@@ -230,9 +239,12 @@ footer a{margin-right:16px;text-underline-offset:3px}
 </footer>
 
 <script>
-// When the App Store version is approved and released, put its link here, for example
-// "https://apps.apple.com/app/id6836840074". Empty = iPhone users install from TestFlight.
+// iPhone: when the App Store version is approved and released, put its link here:
+// "https://apps.apple.com/app/id6836840074" (and remove `hidden` from #ios-appstore, add it to #ios-soon,
+// for browsers without JavaScript). Empty = the page says the iPhone version is coming.
 const APP_STORE = "";
+// true = while APP_STORE is empty, show the TestFlight steps instead of "coming".
+const TESTFLIGHT = false;
 
 const T = {
   en: {
@@ -245,6 +257,8 @@ const T = {
     i2h: "Open the TDS Expert invitation",
     i2p: "TestFlight opens. Tap Accept, then Install.",
     i2b: "Open the invitation",
+    s1h: "Coming to the App Store",
+    s1p: "Apple is checking the iPhone version. This usually takes a few days. Come back to this page then: a button to get TDS Expert from the App Store will be here.",
     a1h: "Get TDS Expert",
     a1p: "Free on the App Store. It does not appear in App Store search, so use this button.",
     a1b: "Open in the App Store",
@@ -273,6 +287,8 @@ const T = {
     i2h: "Ανοίξτε την πρόσκληση του TDS Expert",
     i2p: "Ανοίγει το TestFlight. Πατήστε Αποδοχή (Accept) και μετά Εγκατάσταση (Install).",
     i2b: "Άνοιγμα πρόσκλησης",
+    s1h: "Έρχεται στο App Store",
+    s1p: "Η Apple ελέγχει την έκδοση για iPhone. Συνήθως χρειάζονται λίγες μέρες. Ξαναμπείτε τότε σε αυτή τη σελίδα: εδώ θα υπάρχει κουμπί για να κατεβάσετε το TDS Expert από το App Store.",
     a1h: "Κατεβάστε το TDS Expert",
     a1p: "Δωρεάν στο App Store. Δεν εμφανίζεται στην αναζήτηση του App Store, γι' αυτό χρησιμοποιήστε αυτό το κουμπί.",
     a1b: "Άνοιγμα στο App Store",
@@ -301,11 +317,11 @@ const isIOS = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.
 const isAndroid = /Android/i.test(ua);
 if (isIOS || isAndroid) root.classList.add("is-phone");
 
-if (APP_STORE) {
-  document.getElementById("ios-testflight").hidden = true;
-  document.getElementById("ios-appstore").hidden = false;
-  document.getElementById("appstore-link").href = APP_STORE;
-}
+const iosMode = APP_STORE ? "appstore" : (TESTFLIGHT ? "testflight" : "soon");
+document.getElementById("ios-soon").hidden = iosMode !== "soon";
+document.getElementById("ios-testflight").hidden = iosMode !== "testflight";
+document.getElementById("ios-appstore").hidden = iosMode !== "appstore";
+if (APP_STORE) document.getElementById("appstore-link").href = APP_STORE;
 
 function store(key, value) {
   try { if (value === undefined) return localStorage.getItem(key); localStorage.setItem(key, value); } catch (e) { return null; }
