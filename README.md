@@ -2,9 +2,10 @@
 
 Daily changes for the TDS Expert phone app, published by the TDS Expert sync every weekday.
 
-- `manifest.json` says which version is current.
-- `overlay.json` holds the changed data sheets, **locked**: it is sealed to the app's key and can only be opened with
-  the app password. This repository contains no readable data.
+- `manifest.json` lists the published files and holds the latest sync report, **locked**.
+- `changes/` holds one file per sync run that changed data sheets, **locked**. Files are only added, never changed.
+- Everything is sealed to the app's key and can only be opened with the app password. This repository contains no
+  readable data.
 - `tools/seal-overlay.mjs` is the sealer the sync uses (one file, needs only Node.js), with the app's public key in
   `tools/public-key.txt`. The public key can lock data but cannot open it.
 

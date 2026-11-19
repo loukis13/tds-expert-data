@@ -1,7 +1,15 @@
 {
- "v": 1,
- "version": "2026-11-18T21:52:57Z",
- "file": "overlay.json",
- "published": "2026-11-18T21:52:57Z",
- "records": 0
+ "v": 2,
+ "version": "2026-11-19T11:39:05Z",
+ "published": "2026-11-19T11:39:05Z",
+ "sync": {
+  "v": 1,
+  "kind": "sync",
+  "version": "2026-11-19T11:39:05Z",
+  "alg": "x25519-hkdf-sha256-aes256gcm",
+  "epk": "rGGuiHZOqbQqNloA6WiGez9FybMHLdS2t5uILUyULC0=",
+  "nonce": "2jYCj/1X1TomnVDt",
+  "ct": "Fr7QXl0lSOJBcPELH8ZJ32MV+V9UrIdYMSnWt2SrN/lWcchGRMpJOJCePmDEMlQ6RXppMOXqKlPXOcA6esEsAwCS9xjcCdVRAsDV4qFPbstBYRLfms8XQv4f+eLshb6zm8WXZYAUiIL8bgjJqDK5PhFqr2YCwC2icLsqNJXIYdi+4vPdoCgSq/jNAvKaF5uaLz1Y3T6CfvZ+pUlm2Lhkf3DWIWQl5jbrGirTDuutQHKArbN18RwqrrOfXtsDy1jxBodJrwE7S8rf/exypdrZib+v0QuVTg62dSS7SSP3S99jP0ip5tktqwkV2w5dvjLfFsi2iXHR9xQYfEynvAc="
+ },
+ "files": []
 }

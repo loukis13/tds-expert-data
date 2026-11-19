@@ -3,7 +3,7 @@
 // Usage: node tools/seal-overlay.mjs <changes.json> <data-repo-folder>
 
 // scripts/seal-overlay.mjs
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -3168,49 +3168,65 @@ var unb64 = (s) => {
   for (let i2 = 0; i2 < bin.length; i2++) u83[i2] = bin.charCodeAt(i2);
   return u83;
 };
-var aadFor = (env2) => utf8ToBytes(`tds-expert|${env2.v}|${env2.kind}|${env2.version}`);
+var aadFor = (env) => utf8ToBytes(`tds-expert|${env.v}|${env.kind}|${env.version}`);
 function seal(publicKeyB64, kind, version, obj) {
   const pk = unb64(publicKeyB64);
   const esk = x25519.utils.randomSecretKey();
   const epk = x25519.getPublicKey(esk);
   const key = hkdf(sha256, x25519.getSharedSecret(esk, pk), concatBytes(epk, pk), INFO, 32);
   const nonce = randomBytes(12);
-  const env2 = { v: 1, kind, version, alg: "x25519-hkdf-sha256-aes256gcm", epk: b64(epk), nonce: b64(nonce) };
+  const env = { v: 1, kind, version, alg: "x25519-hkdf-sha256-aes256gcm", epk: b64(epk), nonce: b64(nonce) };
   const plain = gzipSync(utf8ToBytes(JSON.stringify(obj)), { level: 9 });
-  env2.ct = b64(gcm(key, nonce, aadFor(env2)).encrypt(plain));
-  return env2;
+  env.ct = b64(gcm(key, nonce, aadFor(env)).encrypt(plain));
+  return env;
 }
 
 // scripts/seal-overlay.mjs
+var fail = (msg) => {
+  console.error(msg);
+  process.exit(1);
+};
 var scriptDir = dirname(fileURLToPath(import.meta.url));
 var keyPath = [join(scriptDir, "public-key.txt"), join(scriptDir, "..", "keys", "public-key.txt")].find((p) => existsSync(p));
-if (!keyPath) {
-  console.error("public-key.txt not found next to the script or in ../keys.");
-  process.exit(1);
-}
+if (!keyPath) fail("public-key.txt not found next to the script or in ../keys.");
 var [inPath, outDir] = process.argv.slice(2);
-if (!inPath || !outDir) {
-  console.error("Usage: node scripts/seal-overlay.mjs <changes.json> <data-repo-folder>");
-  process.exit(1);
+if (!inPath || !outDir) fail("Usage: node seal-overlay.mjs <run.json> <data-repo-folder>");
+if (!existsSync(outDir)) fail(`Data repository folder not found: ${outDir}`);
+var input;
+try {
+  input = JSON.parse(readFileSync(inPath, "utf8"));
+} catch (e) {
+  fail(`Could not read ${inPath}: ${e.message}`);
 }
-var input = JSON.parse(readFileSync(inPath, "utf8"));
-var records = input.records && typeof input.records === "object" ? input.records : {};
-for (const [id, doc] of Object.entries(records)) {
-  if (!doc || typeof doc !== "object") {
-    console.error(`Record ${id} is not an object.`);
-    process.exit(1);
-  }
-  if (!doc.removed && !Array.isArray(doc.sections)) {
-    console.error(`Record ${id} has no sections.`);
-    process.exit(1);
-  }
+var given = input.records && typeof input.records === "object" && !Array.isArray(input.records) ? input.records : {};
+var records = {};
+for (const [id, doc] of Object.entries(given)) {
+  if (doc && typeof doc === "object" && (doc.removed === true || Array.isArray(doc.sections) && doc.sections.length)) records[id] = doc;
+  else console.error(`Left out ${id}: not a data sheet with sections and not a removal.`);
 }
 var sync = input.sync && typeof input.sync === "object" ? input.sync : null;
-var published = (/* @__PURE__ */ new Date()).toISOString().replace(/\.\d+Z$/, "Z");
+if (!sync) fail("The run file has no sync document (meta/sync).");
 var publicKey = readFileSync(keyPath, "utf8").trim();
-var env = seal(publicKey, "overlay", published, { published, records, sync });
+var published = (/* @__PURE__ */ new Date()).toISOString().replace(/\.\d+Z$/, "Z");
 var manifestPath = join(outDir, "manifest.json");
-var previous = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, "utf8")) : null;
-writeFileSync(join(outDir, "overlay.json"), JSON.stringify(env) + "\n");
-writeFileSync(manifestPath, JSON.stringify({ v: 1, version: published, file: "overlay.json", published, records: Object.keys(records).length }, null, 1) + "\n");
-console.log(`overlay.json: ${Object.keys(records).length} changed data sheets, published ${published}${previous ? " (previous " + previous.version + ")" : ""}`);
+var manifest = null;
+try {
+  manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, "utf8")) : null;
+} catch (e) {
+  fail(`manifest.json is not valid JSON: ${e.message}`);
+}
+var files = manifest && manifest.v === 2 && Array.isArray(manifest.files) ? manifest.files : [];
+var count = Object.keys(records).length;
+var file = "";
+if (count) {
+  mkdirSync(join(outDir, "changes"), { recursive: true });
+  const stamp = published.replace(/:/g, "-");
+  for (let n = 0; !file || existsSync(join(outDir, file)); n++) file = `changes/${stamp}${n ? "-" + n : ""}.json`;
+  const env = seal(publicKey, "changes", published, { published, records });
+  writeFileSync(join(outDir, file), JSON.stringify(env) + "\n");
+  files.push({ file, version: published, records: count });
+}
+var syncEnv = seal(publicKey, "sync", published, { published, sync });
+writeFileSync(manifestPath, JSON.stringify({ v: 2, version: published, published, sync: syncEnv, files }, null, 1) + "\n");
+if (existsSync(join(outDir, "overlay.json"))) rmSync(join(outDir, "overlay.json"));
+console.log(count ? `Published ${count} data sheet(s) in ${file} and the sync of ${published}.` : `Published the sync of ${published} (no data sheets changed).`);
