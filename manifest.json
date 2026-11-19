@@ -1,15 +1,15 @@
 {
  "v": 2,
- "version": "2026-11-19T11:39:05Z",
- "published": "2026-11-19T11:39:05Z",
+ "version": "2026-11-19T11:56:31Z",
+ "published": "2026-11-19T11:56:31Z",
  "sync": {
   "v": 1,
   "kind": "sync",
-  "version": "2026-11-19T11:39:05Z",
+  "version": "2026-11-19T11:56:31Z",
   "alg": "x25519-hkdf-sha256-aes256gcm",
-  "epk": "rGGuiHZOqbQqNloA6WiGez9FybMHLdS2t5uILUyULC0=",
-  "nonce": "2jYCj/1X1TomnVDt",
-  "ct": "Fr7QXl0lSOJBcPELH8ZJ32MV+V9UrIdYMSnWt2SrN/lWcchGRMpJOJCePmDEMlQ6RXppMOXqKlPXOcA6esEsAwCS9xjcCdVRAsDV4qFPbstBYRLfms8XQv4f+eLshb6zm8WXZYAUiIL8bgjJqDK5PhFqr2YCwC2icLsqNJXIYdi+4vPdoCgSq/jNAvKaF5uaLz1Y3T6CfvZ+pUlm2Lhkf3DWIWQl5jbrGirTDuutQHKArbN18RwqrrOfXtsDy1jxBodJrwE7S8rf/exypdrZib+v0QuVTg62dSS7SSP3S99jP0ip5tktqwkV2w5dvjLfFsi2iXHR9xQYfEynvAc="
+  "epk": "ZyAML9jO/4Z45HshRplpwDVc1IgVe7svlKWd34j5xBc=",
+  "nonce": "nGu0YV5R4wkOchC7",
+  "ct": "lQ5KAQfB6RWA+rGl7t3oPXU8eYIjpIfKWn1w2md6ln7mXArQ5INXWOOlaQA8J50m9wZDiO88sc5GybnltLyF6y5+T296Exf+WXeMgVSnKEegAmh4AognHqnQHZ4bn4fSAvzXw1U54WLRkdtZx39fP+B+ITL57bsAPGUSm91r5jwlyI0MQ+OQzMc9bTL7srMl5yBIxopayLOMgPqq+0DuRDCxZlBNaYzPUpDILqJe5LTqgNaUIUW3a8wIPc5kqvYZUGXJq8aIIAcwyeWGa02nPMwgs5+YyzHYWcLuH9EeFrAT8r9b/8TJGm2FpKT60WS45whJPp1/hDA="
  },
  "files": []
 }
