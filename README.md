@@ -11,5 +11,9 @@ Daily changes for the TDS Expert phone app, published by the TDS Expert sync eve
 
 The app checks this repository when it opens (at most every 3 hours). Do not edit the files by hand.
 
+Installing the app: **https://loukis13.github.io/tds-expert-data/** (the page is in `docs/`). Android phones download
+`TDS-Expert.apk` from the latest [release](https://github.com/loukis13/tds-expert-data/releases/latest); the release is
+made by `.github/workflows/android-apk.yml` from the Expo build named in `release/android.json`.
+
 - [Privacy policy](PRIVACY.md)
 - [Support](SUPPORT.md)

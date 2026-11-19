@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Get TDS Expert</title>
+<meta name="description" content="Install TDS Expert, the Thrace Group data sheet app, on iPhone or Android.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="TDS Expert">
+<meta property="og:description" content="Install the Thrace Group data sheet app on iPhone or Android.">
+<meta property="og:url" content="https://loukis13.github.io/tds-expert-data/">
+<meta property="og:image" content="https://loukis13.github.io/tds-expert-data/og.png">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2448d8">
+<link rel="icon" href="icon-64.png" sizes="64x64" type="image/png">
+<link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+@font-face{font-family:"Commissioner";font-style:normal;font-display:swap;font-weight:100 900;
+  src:url(fonts/commissioner-latin-wght-normal.woff2) format("woff2-variations"),url(fonts/commissioner-latin-wght-normal.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Commissioner";font-style:normal;font-display:swap;font-weight:100 900;
+  src:url(fonts/commissioner-greek-wght-normal.woff2) format("woff2-variations"),url(fonts/commissioner-greek-wght-normal.woff2) format("woff2");
+  unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}
+
+:root{
+  --paper:#eef2f8;--sheet:#ffffff;--ink:#0e1b33;--muted:#56647f;--line:#d6dded;
+  --band:#2448d8;--band-deep:#1b39b4;--on-band:#ffffff;--marker:#ffe36e;--btn:#2448d8;--btn-hover:#1b39b4;
+  --c-pack:#2448d8;--c-ipoma:#7c3aed;--c-greiner:#0c8a5d;--c-synthetic:#cf2f6e;
+  --raise:0 1px 2px rgba(14,27,51,.05),0 10px 28px -12px rgba(14,27,51,.18);
+  --font:"Commissioner",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#0a1120;--sheet:#111b2f;--ink:#e6edf8;--muted:#9babc6;--line:#24324d;
+    --band:#14266f;--band-deep:#0f1d57;--marker:rgba(255,214,10,.36);--btn:#3a5cf0;--btn-hover:#2f4fe0;
+    --c-pack:#91a9ff;--c-ipoma:#b99bff;--c-greiner:#4fd1a1;--c-synthetic:#ff7fb5;
+    --raise:0 1px 2px rgba(0,0,0,.4),0 12px 30px -12px rgba(0,0,0,.6);
+  }
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.5 var(--font);
+  font-feature-settings:"tnum" 0;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+
+/* Header: the app's blue band, then the four plants as a stripe */
+.band{background:var(--band);color:var(--on-band);padding-top:max(18px,env(safe-area-inset-top))}
+.band-row{display:flex;align-items:center;gap:14px;padding-bottom:18px}
+.icon{width:56px;height:56px;border-radius:13px;flex:none;box-shadow:0 6px 18px -8px rgba(0,0,20,.6)}
+h1{margin:0;font-size:25px;line-height:1.1;font-weight:760;letter-spacing:-.012em}
+.sub{margin:3px 0 0;font-size:14.5px;line-height:1.35;opacity:.86}
+.lang{margin-left:auto;align-self:flex-start;display:inline-flex;padding:3px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.38);flex:none}
+.lang button{font:650 13px/1 var(--font);color:var(--on-band);background:transparent;border:0;
+  padding:8px 11px;border-radius:999px;cursor:pointer;min-width:40px}
+.lang button[aria-pressed="true"]{background:#fff;color:#14266f}
+.plants{display:grid;grid-template-columns:repeat(4,1fr);height:8px;border-top:3px solid var(--paper)}
+.plants span:nth-child(1){background:var(--c-pack)}
+.plants span:nth-child(2){background:var(--c-ipoma)}
+.plants span:nth-child(3){background:var(--c-greiner)}
+.plants span:nth-child(4){background:var(--c-synthetic)}
+
+/* Layout */
+.layout{display:grid;gap:22px;padding-top:22px;padding-bottom:10px;align-items:start}
+@media (min-width:880px){.layout{grid-template-columns:minmax(0,1fr) 300px;padding-top:30px}}
+.sheet,.scan{background:var(--sheet);border:1px solid var(--line);border-radius:18px;box-shadow:var(--raise)}
+.sheet{padding:20px 20px 6px}
+@media (min-width:560px){.sheet{padding:26px 28px 10px}}
+
+/* Device switch (only with JavaScript; without it both lists show, each with its heading) */
+.device{display:none}
+.js .device{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:13px;background:var(--paper);margin-bottom:6px}
+.device button{font:650 16px/1 var(--font);color:var(--muted);background:transparent;border:0;border-radius:10px;
+  padding:13px 10px;cursor:pointer}
+.device button[aria-selected="true"]{background:var(--sheet);color:var(--ink);box-shadow:0 1px 2px rgba(14,27,51,.12),0 4px 12px -6px rgba(14,27,51,.25)}
+.panel-title{font-size:13px;font-weight:650;color:var(--muted);margin:18px 0 0}
+.js .panel-title{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Steps: numbered like drawing balloons, joined by a leader line */
+.steps{list-style:none;margin:16px 0 0;padding:0}
+.step{position:relative;display:grid;grid-template-columns:36px minmax(0,1fr);gap:14px;padding-bottom:22px}
+.step:not(:last-child)::before{content:"";position:absolute;left:17.25px;top:40px;bottom:4px;border-left:1.5px solid var(--line)}
+.balloon{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;
+  font-weight:720;font-size:15px;background:var(--sheet);font-variant-numeric:tabular-nums}
+.step h3{margin:6px 0 4px;font-size:18px;line-height:1.3;font-weight:700;letter-spacing:-.005em}
+.step p{margin:0 0 12px;color:var(--muted);font-size:15.5px;max-width:60ch}
+.step p:last-child{margin-bottom:0}
+mark{color:var(--ink);font-weight:650;background:linear-gradient(transparent 14%,var(--marker) 14%,var(--marker) 90%,transparent 90%);
+  padding:0 .15em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:12px 20px;border-radius:12px;
+  background:var(--btn);color:#fff;font:680 16.5px/1.2 var(--font);text-decoration:none;text-align:center;
+  box-shadow:0 10px 22px -14px rgba(6,20,90,.8)}
+.btn:hover{background:var(--btn-hover)}
+.btn svg{width:20px;height:20px;flex:none}
+@media (min-width:560px){.btn{display:inline-flex;min-width:250px}}
+:focus-visible{outline:3px solid #ffd60a;outline-offset:2px;border-radius:8px}
+.btn:focus-visible{border-radius:12px}
+
+/* Scan panel for computers */
+.scan{padding:22px;text-align:center}
+.qr-tile{display:inline-block;background:#fff;border-radius:14px;padding:12px;border:1px solid var(--line)}
+.qr{display:block;width:216px;height:216px}
+.scan h2{font-size:17px;line-height:1.3;margin:16px 0 4px;font-weight:700}
+.scan p{margin:0;color:var(--muted);font-size:14.5px}
+.is-phone .scan{display:none}
+
+footer{padding-top:14px;padding-bottom:max(30px,env(safe-area-inset-bottom));color:var(--muted);font-size:14px}
+footer p{margin:0 0 6px}
+footer a{margin-right:16px;text-underline-offset:3px}
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="wrap band-row">
+    <img class="icon" src="icon-180.png" alt="" width="56" height="56">
+    <div>
+      <h1>TDS Expert</h1>
+      <p class="sub" data-t="sub">Thrace Group data sheets on your phone</p>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="el" aria-pressed="false">ΕΛ</button>
+    </div>
+  </div>
+  <div class="plants" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+</header>
+
+<main class="wrap layout">
+  <section class="sheet" aria-labelledby="install-title">
+    <h2 id="install-title" class="panel-title" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)" data-t="install">Install the app</h2>
+    <div class="device" role="tablist" aria-label="Phone">
+      <button type="button" role="tab" id="tab-iphone" aria-controls="panel-iphone" aria-selected="true">iPhone</button>
+      <button type="button" role="tab" id="tab-android" aria-controls="panel-android" aria-selected="false">Android</button>
+    </div>
+
+    <div id="panel-iphone" role="tabpanel" aria-labelledby="tab-iphone" class="panel">
+      <h2 class="panel-title">iPhone</h2>
+      <!-- While the iPhone version is on TestFlight -->
+      <ol class="steps" id="ios-testflight">
+        <li class="step">
+          <span class="balloon" aria-hidden="true">1</span>
+          <div>
+            <h3 data-t="i1h">Install TestFlight</h3>
+            <p data-t="i1p">Apple's free app for apps that are not in the App Store yet.</p>
+            <a class="btn" href="https://apps.apple.com/app/testflight/id899247664" data-t="i1b">Get TestFlight</a>
+          </div>
+        </li>
+        <li class="step">
+          <span class="balloon" aria-hidden="true">2</span>
+          <div>
+            <h3 data-t="i2h">Open the TDS Expert invitation</h3>
+            <p data-t="i2p">TestFlight opens. Tap Accept, then Install.</p>
+            <a class="btn" href="https://testflight.apple.com/join/jm1NSrqq" data-t="i2b">Open the invitation</a>
+          </div>
+        </li>
+        <li class="step">
+          <span class="balloon" aria-hidden="true">3</span>
+          <div>
+            <h3 data-t="o3h">Open TDS Expert</h3>
+            <p data-t="o3p">Enter the password once. <mark>You get it from Thanasis Loukakos.</mark></p>
+          </div>
+        </li>
+      </ol>
+      <!-- Once the App Store version is live (set APP_STORE below) -->
+      <ol class="steps" id="ios-appstore" hidden>
+        <li class="step">
+          <span class="balloon" aria-hidden="true">1</span>
+          <div>
+            <h3 data-t="a1h">Get TDS Expert</h3>
+            <p data-t="a1p">Free on the App Store. It does not appear in App Store search, so use this button.</p>
+            <a class="btn" href="#" id="appstore-link" data-t="a1b">Open in the App Store</a>
+          </div>
+        </li>
+        <li class="step">
+          <span class="balloon" aria-hidden="true">2</span>
+          <div>
+            <h3 data-t="o3h">Open TDS Expert</h3>
+            <p data-t="o3p">Enter the password once. <mark>You get it from Thanasis Loukakos.</mark></p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div id="panel-android" role="tabpanel" aria-labelledby="tab-android" class="panel">
+      <h2 class="panel-title">Android</h2>
+      <ol class="steps">
+        <li class="step">
+          <span class="balloon" aria-hidden="true">1</span>
+          <div>
+            <h3 data-t="d1h">Download TDS Expert</h3>
+            <p data-t="d1p">The file is about 70 MB, so Wi-Fi is best. If Chrome warns about the file, tap Download anyway.</p>
+            <a class="btn" href="https://github.com/loukis13/tds-expert-data/releases/latest/download/TDS-Expert.apk" data-t="d1b">Download for Android</a>
+          </div>
+        </li>
+        <li class="step">
+          <span class="balloon" aria-hidden="true">2</span>
+          <div>
+            <h3 data-t="d2h">Install it</h3>
+            <p data-t="d2p">Open the file when the download finishes and tap Install. If Android asks, allow Chrome to install apps, then go back and tap Install. If Play Protect asks, tap More details, then Install anyway.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="balloon" aria-hidden="true">3</span>
+          <div>
+            <h3 data-t="o3h">Open TDS Expert</h3>
+            <p data-t="o3p">Enter the password once. <mark>You get it from Thanasis Loukakos.</mark></p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <aside class="scan" aria-labelledby="scan-title">
+    <div class="qr-tile"><svg viewBox="-2 -2 37 37" class="qr" role="img" aria-label="QR code of this page" shape-rendering="crispEdges"><path class="qrline" stroke="#0e1b33" d="M0 0.5h7m1 0h1m4 0h2m1 0h2m1 0h1m3 0h1m2 0h7m-33 1h1m5 0h1m1 0h1m3 0h4m2 0h2m1 0h4m1 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h3m1 0h2m5 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m4 0h2m3 0h1m1 0h1m1 0h2m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m2 0h3m5 0h3m3 0h1m2 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h1m2 0h2m4 0h3m1 0h2m-22 1h2m1 0h1m1 0h2m1 0h2m1 0h1m1 0h1m2 0h1m2 0h3m1 0h1m1 0h1m1 0h5m-33 1h4m1 0h1m6 0h6m2 0h1m1 0h1m1 0h4m3 0h2m-32 1h2m2 0h3m1 0h3m2 0h3m1 0h1m1 0h1m4 0h1m1 0h1m2 0h3m-33 1h4m1 0h1m3 0h1m2 0h3m1 0h7m5 0h1m-29 1h1m1 0h1m3 0h3m1 0h2m3 0h1m2 0h1m1 0h2m1 0h1m1 0h2m2 0h1m-28 1h1m1 0h2m3 0h1m3 0h1m1 0h5m1 0h1m2 0h4m2 0h1m1 0h1m-29 1h3m1 0h1m1 0h4m2 0h3m3 0h1m2 0h1m1 0h1m1 0h1m1 0h2m-33 1h1m1 0h3m3 0h1m3 0h1m4 0h1m2 0h5m1 0h2m1 0h1m1 0h1m-32 1h2m1 0h1m2 0h1m1 0h6m3 0h3m1 0h2m1 0h3m-27 1h3m6 0h1m4 0h1m1 0h2m2 0h3m1 0h4m3 0h2m-32 1h3m1 0h3m2 0h1m1 0h1m3 0h1m8 0h2m3 0h3m-32 1h2m1 0h1m6 0h1m2 0h3m2 0h1m1 0h1m1 0h2m2 0h2m2 0h2m-31 1h1m3 0h3m1 0h1m1 0h1m4 0h1m1 0h3m2 0h4m1 0h1m1 0h1m-31 1h1m6 0h3m1 0h2m1 0h2m1 0h1m2 0h1m2 0h1m1 0h1m3 0h3m-33 1h1m3 0h1m1 0h1m4 0h2m1 0h1m1 0h1m4 0h2m1 0h2m2 0h2m1 0h2m-32 1h5m1 0h1m3 0h2m1 0h1m3 0h2m1 0h3m1 0h1m6 0h1m-33 1h1m1 0h2m2 0h3m1 0h2m2 0h1m1 0h2m2 0h3m1 0h6m-22 1h1m3 0h2m1 0h4m1 0h2m2 0h1m3 0h2m1 0h2m-33 1h7m1 0h1m2 0h1m1 0h1m2 0h3m3 0h3m1 0h1m1 0h1m1 0h1m1 0h1m-33 1h1m5 0h1m3 0h1m1 0h2m1 0h4m1 0h3m1 0h1m3 0h1m2 0h2m-33 1h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m3 0h1m1 0h2m2 0h6m2 0h1m-33 1h1m1 0h3m1 0h1m2 0h2m2 0h2m5 0h1m1 0h1m1 0h1m3 0h1m2 0h2m-33 1h1m1 0h3m1 0h1m1 0h2m3 0h3m1 0h2m1 0h2m1 0h1m4 0h1m1 0h1m1 0h1m-33 1h1m5 0h1m1 0h4m4 0h1m1 0h4m2 0h3m1 0h1m2 0h1m-32 1h7m2 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h2m1 0h2m1 0h1m1 0h1m2 0h2"/></svg></div>
+    <h2 id="scan-title" data-t="scanh">On a computer?</h2>
+    <p data-t="scanp">Scan this with your phone's camera to open this page there.</p>
+  </aside>
+</main>
+
+<footer class="wrap">
+  <p data-t="foot">Internal app for Thrace Group staff. New and changed data sheets arrive in the app by themselves.</p>
+  <p><a href="https://github.com/loukis13/tds-expert-data/blob/main/SUPPORT.md" data-t="help">Help</a><a href="https://github.com/loukis13/tds-expert-data/blob/main/PRIVACY.md" data-t="privacy">Privacy</a></p>
+</footer>
+
+<script>
+// When the App Store version is approved and released, put its link here, for example
+// "https://apps.apple.com/app/id6836840074". Empty = iPhone users install from TestFlight.
+const APP_STORE = "";
+
+const T = {
+  en: {
+    title: "Get TDS Expert",
+    sub: "Thrace Group data sheets on your phone",
+    install: "Install the app",
+    i1h: "Install TestFlight",
+    i1p: "Apple's free app for apps that are not in the App Store yet.",
+    i1b: "Get TestFlight",
+    i2h: "Open the TDS Expert invitation",
+    i2p: "TestFlight opens. Tap Accept, then Install.",
+    i2b: "Open the invitation",
+    a1h: "Get TDS Expert",
+    a1p: "Free on the App Store. It does not appear in App Store search, so use this button.",
+    a1b: "Open in the App Store",
+    o3h: "Open TDS Expert",
+    o3p: "Enter the password once. <mark>You get it from Thanasis Loukakos.</mark>",
+    d1h: "Download TDS Expert",
+    d1p: "The file is about 70 MB, so Wi-Fi is best. If Chrome warns about the file, tap Download anyway.",
+    d1b: "Download for Android",
+    d2h: "Install it",
+    d2p: "Open the file when the download finishes and tap Install. If Android asks, allow Chrome to install apps, then go back and tap Install. If Play Protect asks, tap More details, then Install anyway.",
+    scanh: "On a computer?",
+    scanp: "Scan this with your phone's camera to open this page there.",
+    foot: "Internal app for Thrace Group staff. New and changed data sheets arrive in the app by themselves.",
+    help: "Help",
+    privacy: "Privacy",
+    phone: "Phone",
+    lang: "Language"
+  },
+  el: {
+    title: "Εγκατάσταση TDS Expert",
+    sub: "Τα τεχνικά δελτία του Ομίλου Thrace στο κινητό σας",
+    install: "Εγκατάσταση της εφαρμογής",
+    i1h: "Εγκαταστήστε το TestFlight",
+    i1p: "Η δωρεάν εφαρμογή της Apple για εφαρμογές που δεν είναι ακόμη στο App Store.",
+    i1b: "Λήψη TestFlight",
+    i2h: "Ανοίξτε την πρόσκληση του TDS Expert",
+    i2p: "Ανοίγει το TestFlight. Πατήστε Αποδοχή (Accept) και μετά Εγκατάσταση (Install).",
+    i2b: "Άνοιγμα πρόσκλησης",
+    a1h: "Κατεβάστε το TDS Expert",
+    a1p: "Δωρεάν στο App Store. Δεν εμφανίζεται στην αναζήτηση του App Store, γι' αυτό χρησιμοποιήστε αυτό το κουμπί.",
+    a1b: "Άνοιγμα στο App Store",
+    o3h: "Ανοίξτε το TDS Expert",
+    o3p: "Πληκτρολογήστε τον κωδικό μία φορά. <mark>Τον κωδικό σάς τον δίνει ο Θανάσης Λουκάκος.</mark>",
+    d1h: "Κατεβάστε το TDS Expert",
+    d1p: "Το αρχείο είναι περίπου 70 MB, καλύτερα με Wi-Fi. Αν το Chrome προειδοποιήσει για το αρχείο, επιλέξτε να γίνει η λήψη.",
+    d1b: "Λήψη για Android",
+    d2h: "Εγκαταστήστε το",
+    d2p: "Ανοίξτε το αρχείο όταν τελειώσει η λήψη και πατήστε Εγκατάσταση. Αν το Android ρωτήσει, επιτρέψτε στο Chrome να εγκαθιστά εφαρμογές, γυρίστε πίσω και πατήστε Εγκατάσταση. Αν εμφανιστεί μήνυμα του Play Protect, ανοίξτε τις λεπτομέρειες και επιλέξτε εγκατάσταση.",
+    scanh: "Σε υπολογιστή;",
+    scanp: "Σκανάρετε τον κωδικό με την κάμερα του κινητού σας για να ανοίξει αυτή η σελίδα εκεί.",
+    foot: "Εσωτερική εφαρμογή για το προσωπικό του Ομίλου Thrace. Τα νέα και τα αλλαγμένα δελτία έρχονται στην εφαρμογή μόνα τους.",
+    help: "Βοήθεια",
+    privacy: "Απόρρητο",
+    phone: "Κινητό",
+    lang: "Γλώσσα"
+  }
+};
+
+const root = document.documentElement;
+root.classList.add("js");
+
+const ua = navigator.userAgent || "";
+const isIOS = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+const isAndroid = /Android/i.test(ua);
+if (isIOS || isAndroid) root.classList.add("is-phone");
+
+if (APP_STORE) {
+  document.getElementById("ios-testflight").hidden = true;
+  document.getElementById("ios-appstore").hidden = false;
+  document.getElementById("appstore-link").href = APP_STORE;
+}
+
+function store(key, value) {
+  try { if (value === undefined) return localStorage.getItem(key); localStorage.setItem(key, value); } catch (e) { return null; }
+}
+
+function setLang(lang) {
+  const t = T[lang] || T.en;
+  root.lang = lang;
+  document.title = t.title;
+  document.querySelectorAll("[data-t]").forEach(el => {
+    const s = t[el.dataset.t];
+    if (s !== undefined) el.innerHTML = s;
+  });
+  document.querySelector(".device").setAttribute("aria-label", t.phone);
+  document.querySelector(".lang").setAttribute("aria-label", t.lang);
+  document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+}
+
+function setDevice(device, updateHash) {
+  ["iphone", "android"].forEach(d => {
+    const on = d === device;
+    document.getElementById("tab-" + d).setAttribute("aria-selected", String(on));
+    document.getElementById("tab-" + d).tabIndex = on ? 0 : -1;
+    document.getElementById("panel-" + d).hidden = !on;
+  });
+  if (updateHash) history.replaceState(null, "", "#" + device);
+}
+
+const params = new URLSearchParams(location.search);
+const wanted = params.get("lang") || store("tds-lang") ||
+  ((navigator.languages || [navigator.language || ""]).some(l => /^el\b/i.test(l)) ? "el" : "en");
+setLang(T[wanted] ? wanted : "en");
+
+const hash = location.hash.replace("#", "");
+setDevice(hash === "android" || hash === "iphone" ? hash : (isAndroid ? "android" : "iphone"), false);
+
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => {
+  setLang(b.dataset.lang);
+  store("tds-lang", b.dataset.lang);
+}));
+const tabs = [...document.querySelectorAll('[role="tab"]')];
+tabs.forEach((tab, i) => {
+  tab.addEventListener("click", () => setDevice(tab.id.replace("tab-", ""), true));
+  tab.addEventListener("keydown", e => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const next = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+    next.focus();
+    next.click();
+  });
+});
+</script>
+</body>
+</html>
